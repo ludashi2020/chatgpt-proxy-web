@@ -12,8 +12,14 @@ You should log in to the [ChatGPT website](https://chat.openai.com/chat), find t
 Modify `config.py` to set the configuration.
 ``` python
 # If you change this property, the `resource` directory needs to be manually deleted.
-listen_url = "http://127.0.0.1"
-listen_port = 8011
+# Please configure a specific IP address for accessing the service, rather than using 0.0.0.0. If you are using a VPS, please configure the public IP address of the VPS's outbound traffic.
+listen_addr = ("127.0.0.1", 8011)
+
+# If using a domain name, need to configure `domain_url`, and `listen_addr` should be accessible from the public network. If it is an HTTPS service, need to configure nginx proxy_pass `listen_addr`.
+# example1: domain_url = "http://chatgpt.chat:8011"; listen_addr = ("8.8.8.8", 8011)
+# example2: domain_url = "http://chatgpt.chat"; listen_addr = ("8.8.8.8", 80)
+# example3: domain_url = "https://chatgpt.chat"; listen_addr = ("127.0.0.1", 8011); nginx `location / {proxy_pass http://127.0.0.1:8011}`
+domain_url = ""
 
 # Enable account and password authentication for the webpage.
 is_verify = False
@@ -50,30 +56,11 @@ python3 main.py
 
 browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
-**If you need to access using a domain name, you can refer to my configuration.**
-
-`config.py`
-``` python
-listen_url = "https://cooolr.online"
-listen_port = 8011
-```
-
-`nginx.conf`
-```plain text
-server {
-    location / {
-        proxy_pass http://127.0.0.1:8011;
-    }
-}
-```
-
-
-
 ## Note
 
 1. It can only be used for Plus member accounts, free accounts without _puid parameters will have CF verification.
 2. auto login `auth.py`, thank you [https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth).
 
 ## Renderings
-![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/static_files/login.png)
-![chat](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/static_files/chat.png)
+![login](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/templates/login.png)
+![chat](https://github.com/cooolr/chatgpt_plus_proxy_website/blob/main/templates/chat.png)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response
-# Use gevent to speed up if needed.
+from flask import Flask, request, redirect, send_file, Response, stream_with_context, make_response, render_template
+# Use gevent to speed up. need `pip install gevent`
 '''
 from gevent.pywsgi import WSGIServer
 from gevent import monkey
@@ -20,7 +20,7 @@ sys.path.append(current_dir)
 from auth import *
 from config import *
 
-listen_url = listen_url + ":" + str(listen_port) if listen_url[-2].isdigit() else listen_url
+listen_url = domain_url if domain_url else f"http://{listen_addr[0]}:{listen_addr[1]}"
 
 user_headers = {}
 user_cookies = {}
@@ -81,12 +81,6 @@ app.url_map.converters['regex'] = RegexConverter
 resource_dir = os.path.join(current_dir, 'resource')
 os.makedirs(resource_dir, exist_ok=True)
 
-# 预加载登录和登录失败页面
-with open(os.path.join(current_dir, 'static_files', 'login.html'), 'r', encoding='utf-8') as f:
-    login_html = f.read()
-with open(os.path.join(current_dir, 'static_files', 'login_failed.html'), 'r', encoding='utf-8') as f:
-    login_failed_html = f.read()
-
 # 登录认证
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -95,7 +89,7 @@ def login():
     if request.cookies.get("accessToken") in user_headers:
         return redirect('/chat',302)
     if request.method =='GET':
-        return login_html
+        return render_template('login.html', login_failed="")
     username = request.form['username']
     password = request.form['password']
     # user_id加密过程
@@ -105,7 +99,7 @@ def login():
         resp.set_cookie("accessToken", uid, max_age=604800)
         return resp
     else:
-        return login_failed_html
+        return render_template('login.html', login_failed="登录失败，请重试。")
 
 # handles all HTTP request methods
 @app.route('/<path:uri>', methods=['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'HEAD', 'TRACE', 'CONNECT', 'PATCH'])
@@ -171,7 +165,8 @@ def index(uri):
         return r.content.replace(b'https://chat.openai.com', listen_url.encode())
 
 if __name__ == "__main__":
-    host = '127.0.0.1' if not listen_url[-2].isdigit() else listen_url.split("//")[-1].split(":")[0]
-    app.run(host=host, port=listen_port, threaded=True)
-    # WSGIServer((host, listen_port), app).serve_forever()
+    host = "127.0.0.1" if listen_addr[0] in ("127.0.0.1", "localhost") else "0.0.0.0"
+    port = listen_addr[1]
+    app.run(host=host, port=port, threaded=True)
+    # WSGIServer((host, port), app).serve_forever()
     # 在浏览器打开: http://127.0.0.1:8011/chat
