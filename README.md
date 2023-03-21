@@ -56,9 +56,15 @@ python3 main.py
 
 browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
+## Futures
+
+1. Bypass the free account Cloudflare verification to achieve a response speed comparable to that of Plus members
+2. Add the Plus member logo to the free account
+3. Bypass the regional ban on chat.openai.com
+
 ## Note
 
-1. It can only be used for Plus member accounts, free accounts without _puid parameters will have CF verification.
+1. relies on the Plus-exclusive _puid parameter. Without it, CloudFlare cannot be bypassed.
 2. auto login `auth.py`, thank you [https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth).
 
 ## Renderings

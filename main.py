@@ -14,6 +14,7 @@ import json
 import requests
 from hashlib import md5
 from urllib.parse import unquote
+from datetime import datetime,timedelta
 from werkzeug.routing import BaseConverter
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(current_dir)
@@ -112,6 +113,9 @@ def index(uri):
         resp = make_response('{"url":"/"}'.encode())
         resp.delete_cookie("accessToken")
         return resp
+    # 开启尊贵的Plus标识
+    if uri == 'backend-api/accounts/check':
+        return json.dumps({"account_plan":{"is_paid_subscription_active":True,"subscription_plan":"chatgptplusplan","account_user_role":"account-owner","was_paid_customer":True,"has_customer_object":True,"subscription_expires_at_timestamp":int((datetime.now()-timedelta(days=31)).timestamp())},"user_country":"US","features":["system_message","model_switcher","model_preview"]})
     param = '&'.join([f'{i}={j}' for i,j in request.args.items()])
     url = f"https://chat.openai.com/{uri}?{param}" if param else f"https://chat.openai.com/{uri}"
     uid = request.cookies.get("accessToken") if is_verify else user_id

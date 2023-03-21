@@ -59,9 +59,15 @@ python3 main.py
 
 浏览器打开链接：[http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
+## 特性
+
+1. 绕过免费账号Cloudflare验证，达到媲美Plus会员的响应速度
+2. 免费账号增加Plus会员标识
+3. 绕过地区对chat.openai.com的封禁
+
 ## 注意
 
-1. 只能用于Plus会员账号，免费账号不带_puid参数会有CF验证
+1. 依赖于专用于 Plus 的 `_puid` 参数。 没有它，就无法绕过 CloudFlare。
 2. 自动登录部分 `auth.py` ,感谢[https://github.com/acheong08/OpenAIAuth](https://github.com/acheong08/OpenAIAuth)
 
 ## 效果图
