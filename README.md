@@ -56,7 +56,7 @@ python3 main.py
 
 browser open link: [http://127.0.0.1:8011/chat](http://127.0.0.1:8011/chat)
 
-## Futures
+## Fetures
 
 1. Bypass the free account Cloudflare verification to achieve a response speed comparable to that of Plus members
 2. Add the Plus member logo to the free account
